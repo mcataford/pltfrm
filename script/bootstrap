@@ -2,7 +2,7 @@
 
 VENV="venv"
 
-python -m pip install pip==22.3 pip-tools==6.9.0 --no-cache
+python -m pip install pip==22.3.1 pip-tools==6.11.0 --no-cache
 
 if [ ! -d "./$VENV" ]; then
     python -m venv ./$VENV
