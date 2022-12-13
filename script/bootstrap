@@ -1,0 +1,13 @@
+#!/bin/bash
+
+VENV="venv"
+
+python -m pip install pip==22.3 pip-tools==6.9.0 --no-cache
+
+if [ ! -d "./$VENV" ]; then
+    python -m venv ./$VENV
+fi
+
+source ./$VENV/bin/activate
+
+pip install -e ".[dev]"

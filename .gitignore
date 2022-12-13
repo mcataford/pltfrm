@@ -1,0 +1,4 @@
+htmlcov
+*.egg-info
+venv
+*.pyc
