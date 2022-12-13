@@ -22,7 +22,7 @@ changes will be signalled in the releases' changelog.
 ## 📦 Installation
 
 Until this is released anywhere, you can install it directly from source via `pip install
-git+https://github.com/mcataford/pltfrm.git`.
+git+https://github.com/mcataford/pltfrm.git#egg=pltfrm`.
 
 ## 🔨 Usage
 
@@ -31,14 +31,16 @@ git+https://github.com/mcataford/pltfrm.git`.
 ```
 usage: pltfrm [-h] [-v] [-a] [--cwd CWD] {start,stop} ...
 
+Makes handling multi-docker-projects environments a bit easier.
+
 positional arguments:
-  {start,stop}
+  {start,stop}   Action to take.
+    start        Starts target projects.
+    stop         Stops running target projects.
 
 optional arguments:
   -h, --help     show this help message and exit
-  -v, --verbose
-  -a, --all
-  --cwd CWD
+  -v, --verbose  Extra output, including forwarded output from docker.
+  -a, --all      Applies the command to all known projects.
+  --cwd CWD      Directory used as root when looking for configuration files.
 ```
-
-

@@ -1,4 +1,16 @@
 """
+PLTFRM
+
+Quick tooling to manage docker-based multi-project environments.
+---
+
+`pltfrm` is a thin wrapper around repetitive calls to `docker-compose` and
+aims to help with use cases where multiple projects living in different
+locations are at play without having to `cd` from one place to another
+constantly.
+
+It is configuration-file drive such that you can easily integrate it
+to your use case.
 """
 
 import subprocess
@@ -7,6 +19,7 @@ import sys
 import argparse
 import typing
 import json
+import os
 
 Command = typing.Union[
     typing.Literal["start"],
@@ -45,22 +58,22 @@ def get_argument_parser() -> argparse.ArgumentParser:
     """
     Prepares the argument parser.
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="pltfrm", description="Makes handling multi-docker-projects environments a bit easier.")
 
-    parser.add_argument("-v", "--verbose", action="store_true")
-    parser.add_argument("-a", "--all", action="store_true")
-    parser.add_argument("--cwd", type=str, default=".")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Extra output, including forwarded output from docker.")
+    parser.add_argument("-a", "--all", action="store_true", help="Applies the command to all known projects.")
+    parser.add_argument("--cwd", type=str, default=os.getenv("HOME", "."), help="Directory used as root when looking for configuration files.")
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command", required=True, help="Action to take.")
 
-    parser_start = subparsers.add_parser("start")
+    parser_start = subparsers.add_parser("start", help="Starts target projects.")
 
-    parser_start.add_argument("targets", nargs="*")
-    parser_start.add_argument("-b", "--build", default=False, action="store_true")
+    parser_start.add_argument("targets", nargs="*", help="Target projects to start.")
+    parser_start.add_argument("-b", "--build", default=False, action="store_true", help="Build projects before starting.")
 
-    parser_stop = subparsers.add_parser("stop")
+    parser_stop = subparsers.add_parser("stop", help="Stops running target projects.")
 
-    parser_stop.add_argument("targets", nargs="*")
+    parser_stop.add_argument("targets", nargs="*", help="Targets to stop.")
 
     return parser
 
