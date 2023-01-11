@@ -2,10 +2,15 @@
 name = "pltfrm"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Marc Cataford <mcat@riseup.net>"]
+description = "Handy wrapper tool around docker & docker-compose to manage your applications"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/mcataford/pltfrm"
+homepage = "https://github.com/mcataford/pltfrm"
 
 [dependencies]
 clap = { version = "4.0.32", features=["derive"] }
 serde_json = { version = "1.0", features=["alloc"] }
 serde = { version = "1.0.152", features=["alloc", "derive"] }
+owo-colors = "3.5.0"

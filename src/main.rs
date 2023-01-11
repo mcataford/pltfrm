@@ -1,4 +1,5 @@
 use clap::Parser;
+use owo_colors::OwoColorize;
 use serde::Deserialize;
 
 use std::collections::HashMap;
@@ -13,27 +14,27 @@ const DEFAULT_CONFIG_PATH: &str = "~/.config/pltfrm/pltfrm.json";
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    // Defines the path to the pltftm configuration file.
+    /// Defines the path to the pltftm configuration file.
     #[arg(long)]
     config_path: Option<String>,
 
-    // If truthy, containers will be rebuilt before being started.
+    /// If truthy, containers will be rebuilt before being started.
     #[arg(short, long)]
     build: bool,
 
-    // If truthy, all containers defined in the config are processed, targets are ignored.
+    /// If truthy, all containers defined in the config are processed, targets are ignored.
     #[arg(short, long)]
     all: bool,
 
-    // If truthy, subcommand output is printed out after execution. Note that failure
-    // is always noisy.
+    /// If truthy, subcommand output is printed out after execution. Note that failure
+    /// is always noisy.
     #[arg(short, long)]
     verbose: bool,
 
-    // Action to take.
+    /// Action to take.
     action: String,
 
-    // Collection of projects to apply the action on.
+    /// Collection of projects to apply the action on.
     targets: Vec<String>,
 }
 
@@ -83,8 +84,8 @@ fn start_containers(
         }
 
         match output.status.success() {
-            true => println!("{} started.", project),
-            false => println!("{} failed to start.", project),
+            true => println!("{}", format!("{} started.", project).green()),
+            false => println!("{}", format!("{} failed to start.", project).red()),
         }
     }
 }
@@ -111,8 +112,8 @@ fn stop_containers(projects: Vec<String>, configuration: Configuration, verbose:
         }
 
         match output.status.success() {
-            true => println!("{} stopped.", project),
-            false => println!("{} failed to stop.", project),
+            true => println!("{}", format!("{} stopped.", project).green()),
+            false => println!("{}", format!("{} failed to stop.", project).red()),
         }
     }
 }
