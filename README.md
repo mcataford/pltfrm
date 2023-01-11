@@ -21,26 +21,26 @@ changes will be signalled in the releases' changelog.
 
 ## 📦 Installation
 
-Until this is released anywhere, you can install it directly from source via `pip install
-git+https://github.com/mcataford/pltfrm.git#egg=pltfrm`.
+Artifacts will eventually get released automagically on tag creation, but until then, you can either fetch the assets from the Github releases or build it yourself by via `cargo build`.
 
 ## 🔨 Usage
 
 `pltfrm --help` is the best documentation on usage:
 
 ```
-usage: pltfrm [-h] [-v] [-a] [--cwd CWD] {start,stop} ...
+Handy wrapper tool around docker & docker-compose to manage your applications
 
-Makes handling multi-docker-projects environments a bit easier.
+Usage: pltfrm [OPTIONS] <ACTION> [TARGETS]...
 
-positional arguments:
-  {start,stop}   Action to take.
-    start        Starts target projects.
-    stop         Stops running target projects.
+Arguments:
+  <ACTION>      Action to take
+  [TARGETS]...  Collection of projects to apply the action on
 
-optional arguments:
-  -h, --help     show this help message and exit
-  -v, --verbose  Extra output, including forwarded output from docker.
-  -a, --all      Applies the command to all known projects.
-  --cwd CWD      Directory used as root when looking for configuration files.
+Options:
+      --config-path <CONFIG_PATH>  Defines the path to the pltftm configuration file
+  -b, --build                      If truthy, containers will be rebuilt before being started
+  -a, --all                        If truthy, all containers defined in the config are processed, targets are ignored
+  -v, --verbose                    If truthy, subcommand output is printed out after execution. Note that failure is always noisy
+  -h, --help                       Print help information
+  -V, --version                    Print version information
 ```

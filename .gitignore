@@ -1,4 +1,1 @@
-htmlcov
-*.egg-info
-venv
-*.pyc
+target
