@@ -29,7 +29,10 @@ fn expand_tilde(path: String) -> String {
 
 fn start_containers(projects: Vec<String>, configuration: Configuration) {
     for project in projects.iter() {
-        let project_path = configuration.projects.get(project).expect("wowow");
+        let project_path = configuration
+            .projects
+            .get(project)
+            .expect("Unknown project");
         let status = Command::new("docker-compose")
             .current_dir(project_path)
             .arg("up")
@@ -41,7 +44,10 @@ fn start_containers(projects: Vec<String>, configuration: Configuration) {
 
 fn stop_containers(projects: Vec<String>, configuration: Configuration) {
     for project in projects.iter() {
-        let project_path = configuration.projects.get(project).expect("wowow");
+        let project_path = configuration
+            .projects
+            .get(project)
+            .expect("Unknown project");
         let status = Command::new("docker-compose")
             .current_dir(project_path)
             .arg("down")
@@ -53,18 +59,21 @@ fn stop_containers(projects: Vec<String>, configuration: Configuration) {
 fn main() {
     let cli = Args::parse();
 
-    let config_path_raw = cli.cwd.unwrap_or(expand_tilde("~/.config/pltfrm/pltfrm.json".to_string()));
+    let config_path_raw = cli
+        .cwd
+        .unwrap_or(expand_tilde("~/.config/pltfrm/pltfrm.json".to_string()));
 
     let config_path = Path::new(&config_path_raw);
-    
+
     if !config_path.exists() {
         panic!("No config");
     }
 
-    let config_file = File::open(config_path).expect("w");
+    let config_file = File::open(config_path).expect("Failed to open configuration file");
     let config_buf = BufReader::new(config_file);
 
-    let config: Configuration = serde_json::from_reader(config_buf).expect("wo");
+    let config: Configuration =
+        serde_json::from_reader(config_buf).expect("Failed to parse configuration. Expected json.");
 
     if cli.action == "start" {
         start_containers(cli.targets, config);
