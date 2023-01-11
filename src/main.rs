@@ -7,11 +7,16 @@ use std::io::BufReader;
 use std::path::Path;
 use std::process::Command;
 
+const DEFAULT_CONFIG_PATH: &str = "~/.config/pltfrm/pltfrm.json";
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[arg(long)]
     cwd: Option<String>,
+
+    #[arg(short, long)]
+    build: bool,
     action: String,
     targets: Vec<String>,
 }
@@ -27,17 +32,21 @@ fn expand_tilde(path: String) -> String {
     return home_dir + path.strip_prefix("~").unwrap();
 }
 
-fn start_containers(projects: Vec<String>, configuration: Configuration) {
+fn start_containers(projects: Vec<String>, configuration: Configuration, build: bool) {
     for project in projects.iter() {
         let project_path = configuration
             .projects
             .get(project)
             .expect("Unknown project");
-        let status = Command::new("docker-compose")
-            .current_dir(project_path)
-            .arg("up")
-            .arg("-d")
-            .status();
+        let mut command = Command::new("docker-compose");
+        command.current_dir(project_path).arg("up").arg("-d");
+
+        if build {
+            command.arg("--build");
+        }
+
+        let _status = command.status();
+        // FIXME: Handle error statuses.
         println!("{} started.", project);
     }
 }
@@ -48,10 +57,11 @@ fn stop_containers(projects: Vec<String>, configuration: Configuration) {
             .projects
             .get(project)
             .expect("Unknown project");
-        let status = Command::new("docker-compose")
+        let _status = Command::new("docker-compose")
             .current_dir(project_path)
             .arg("down")
             .status();
+        // FIXME: Handle error statuses.
         println!("{} stopped.", project);
     }
 }
@@ -61,7 +71,7 @@ fn main() {
 
     let config_path_raw = cli
         .cwd
-        .unwrap_or(expand_tilde("~/.config/pltfrm/pltfrm.json".to_string()));
+        .unwrap_or(expand_tilde(DEFAULT_CONFIG_PATH.to_string()));
 
     let config_path = Path::new(&config_path_raw);
 
@@ -75,9 +85,9 @@ fn main() {
     let config: Configuration =
         serde_json::from_reader(config_buf).expect("Failed to parse configuration. Expected json.");
 
-    if cli.action == "start" {
-        start_containers(cli.targets, config);
-    } else if cli.action == "stop" {
-        stop_containers(cli.targets, config);
+    match cli.action.as_str() {
+        "start" => start_containers(cli.targets, config, cli.build),
+        "stop" => stop_containers(cli.targets, config),
+        _ => panic!("Unknown command"),
     }
 }
